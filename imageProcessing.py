@@ -15,12 +15,11 @@ def main(img):
     image = Image.open(img).convert('L')
     image.save('{}grey.jpg'.format(GREYS))
     imageArray = np.array(image)
-    block = analyze(imageArray)
-    return block
+    block, imageStudy = analyze(imageArray)
+    return block, imageStudy
 
 def analyze(array):
-    y_values = []
-    x_values = []
+
     representing_value = []
     count_y = 0
     count_x = 0
@@ -34,8 +33,8 @@ def analyze(array):
             representing_value.append(value)
             blocksDataHold.append(dict({'x':count_x, 'y':count_y, 'val':value}))
         count_x = 0
-
-    return blocksDataHold
+    imageStudy  = {'shades': len(set(representing_value)), 'min':min(representing_value), 'max':max(representing_value)}
+    return blocksDataHold, imageStudy
 
 def postProcessing(totalBlock):
     x = []
@@ -68,5 +67,6 @@ if __name__ == "__main__":
         print 'Please provide an image.'
         exit()
 
-    block = main(sys.argv[1])
+    block, imageStudy= main(sys.argv[1])
+    print 'Data about image: {}'.format(imageStudy)
     graph(block)

@@ -81,7 +81,7 @@ def graph(block, imageStudy):
     # Grab some test data.
     X, Y, Z = enhancedPostProcessing(block, imageStudy)
 
-    surf = ax.plot_trisurf(X, Y, Z)
+    surf = ax.plot(X, Y, Z)
     plt.show()
 
 if __name__ == "__main__":

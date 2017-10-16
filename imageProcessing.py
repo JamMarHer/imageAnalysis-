@@ -8,10 +8,12 @@ from matplotlib.ticker import LinearLocator, FormatStrFormatter
 from matplotlib import cm
 #from mayavi import mlab
 
+GREYS = 'greys/'
+
 
 def main(img):
     image = Image.open(img).convert('L')
-    image.save('grey.jpg')
+    image.save('{}grey.jpg'.format(GREYS))
     imageArray = np.array(image)
     block = analyze(imageArray)
     return block

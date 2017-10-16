@@ -9,7 +9,7 @@ from matplotlib import cm
 #from mayavi import mlab
 
 GREYS = 'greys/'
-
+DEPTH = 6
 
 def main(img):
     image = Image.open(img).convert('L')
@@ -48,18 +48,40 @@ def postProcessing(totalBlock):
 
     return x, y, z
 
+def enhancedPostProcessing(totalBlock, imageStudy):
+    sector = imageStudy['shades'] / DEPTH
+    sectorRanges = []
+    for x in range(DEPTH):
+        sectorRanges.append(sector * x)
+    sectorRanges.append(imageStudy['max'])
+    x = []
+    y = []
+    z = []
+
+    for key in totalBlock:
+        x.append(key['x'])
+        y.append(key['y'])
+        for currentMaxIndex in range(len(sectorRanges)):
+            if sectorRanges[currentMaxIndex] <= key['val'] <= sectorRanges[currentMaxIndex + 1]:
+                z.append(sectorRanges[currentMaxIndex])
+                break
+    print '{} out of {}'.format(len(z), len(x))
+    print sectorRanges
+    print sector
+    return x, y, z
+
 # y: 600; current value.
 # x: 1000; current value of the second iteration.
 # z: 0 - 500; actual value of the array so basically array[y][x]
 
-def graph(block):
+def graph(block, imageStudy):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
     # Grab some test data.
-    X, Y, Z = postProcessing(block)
+    X, Y, Z = enhancedPostProcessing(block, imageStudy)
 
-    surf = ax.plot(X, Y, Z)
+    surf = ax.plot_trisurf(X, Y, Z)
     plt.show()
 
 if __name__ == "__main__":
@@ -69,4 +91,4 @@ if __name__ == "__main__":
 
     block, imageStudy= main(sys.argv[1])
     print 'Data about image: {}'.format(imageStudy)
-    graph(block)
+    graph(block, imageStudy)

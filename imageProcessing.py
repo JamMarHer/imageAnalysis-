@@ -6,10 +6,11 @@ from mpl_toolkits.mplot3d import axes3d
 import matplotlib.animation  as animation
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 from matplotlib import cm
+import math
 #from mayavi import mlab
 
 GREYS = 'greys/'
-DEPTH = 6
+DEPTH = 12
 
 def main(img):
     image = Image.open(img).convert('L')
@@ -26,8 +27,8 @@ def analyze(array):
     blocksDataHold = []
     for y_values_list in array:
         count_y += 1
-    #    if count_y == 50:
-    #        break
+#        if count_y == 50:
+#            break
         for value in y_values_list:
             count_x += 1
             representing_value.append(value)
@@ -59,17 +60,19 @@ def enhancedPostProcessing(totalBlock, imageStudy):
     z = []
 
     for key in totalBlock:
-        x.append(key['x'])
-        y.append(key['y'])
         for currentMaxIndex in range(len(sectorRanges)):
             if sectorRanges[currentMaxIndex] <= key['val'] <= sectorRanges[currentMaxIndex + 1]:
-                z.append(sectorRanges[currentMaxIndex])
+                z.append(abs(255 - sectorRanges[currentMaxIndex]))
+                x.append(key['x'])
+                y.append(key['y'])
                 break
     print '{} out of {}'.format(len(z), len(x))
     print sectorRanges
     print sector
     return x, y, z
 
+
+    return block
 # y: 600; current value.
 # x: 1000; current value of the second iteration.
 # z: 0 - 500; actual value of the array so basically array[y][x]
